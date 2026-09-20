@@ -157,7 +157,23 @@ Sau khi chạy kiểm thử AUTO mode cơ bản thành công, tiến hành chấ
    - **Áp dụng cho xe `TURN_RADIUS = 3.0m`, muốn vận tốc cua $1.0\text{ m/s}$:**
      - Đặt **`ATC_TURN_MAX_G = 0.035`** (G).
      - **Hiệu ứng:** Xe chạy thẳng duy trì $1.5\text{ m/s}$, khi vào cua gắt $R = 3.0\text{m}$ tự động hãm phanh về đúng $1.0\text{ m/s}$ mà không bao giờ bị lịm ga $< 0.5\text{ m/s}$.
+
 ---
+### BƯỚC 5.3: CẤU HÌNH GIẢM TỐC KHI TIẾP CẬN WAYPOINT CUỐI CÙNG (END OF MISSION DECELERATION)
+Để xe chủ động đi chậm lại / rà phanh mượt mà khi tiếp cận Waypoint cuối cùng trong bài Mission, thực hiện theo 1 trong 2 cách sau:
+
+* **Cách 1: Thêm `Delay` (Thời gian dừng) vào Waypoint cuối (Khuyên dùng):**
+  - **Thao tác trên Mission Planner:** Tại hàng Waypoint cuối cùng (hoặc bất kỳ WP nào cần giảm tốc), đặt tham số **`Delay = 1`** (hoặc `0.5` giây).
+  - **Cơ chế hoạt động:** Ngay khi thấy có thời gian chờ `Delay > 0`, thuật toán S-Curve tự động chuyển WP đó từ Fast WP sang Normal Stop WP. Xe sẽ tự tính toán quãng đường hãm phanh mượt mà từ xa để về vận tốc $0\text{ m/s}$ ngay tại tâm WP, chờ hết `Delay` rồi mới chuyển trạng thái tiếp theo.
+
+* **Cách 2: Chèn lệnh giảm tốc trong bài Mission (`DO_CHANGE_SPEED`):**
+  - **Thao tác trên Mission Planner:** Nếu muốn xe ép chạy với tốc độ bò chậm cố định (ví dụ $0.5\text{ m/s}$) trước khi tới WP cuối, chèn lệnh **`DO_CHANGE_SPEED`** ngay trước Waypoint cuối:
+    - **`Speed Type`**: `0` (Ground speed)
+    - **`Speed`**: `0.5` ($\text{m/s}$)
+    - **`Throttle`**: `-1` (Mặc định)
+
+---
+
 
 ## 📊 BẢNG SO SÁNH BIẾN ĐỔI CHI TIẾT GIỮA BẢN 03/08 VÀ BẢN 09/08 LATEST
 
