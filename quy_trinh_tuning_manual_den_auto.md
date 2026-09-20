@@ -159,17 +159,22 @@ Sau khi chạy kiểm thử AUTO mode cơ bản thành công, tiến hành chấ
      - **Hiệu ứng:** Xe chạy thẳng duy trì $1.5\text{ m/s}$, khi vào cua gắt $R = 3.0\text{m}$ tự động hãm phanh về đúng $1.0\text{ m/s}$ mà không bao giờ bị lịm ga $< 0.5\text{ m/s}$.
 
 ---
-### BƯỚC 5.3: CẤU HÌNH GIẢM TỐC KHI TIẾP CẬN WAYPOINT CUỐI CÙNG (END OF MISSION DECELERATION)
-Để xe chủ động đi chậm lại / rà phanh mượt mà khi tiếp cận Waypoint cuối cùng trong bài Mission, thực hiện theo 1 trong 2 cách sau:
+---
+### BƯỚC 5.3: CẤU HÌNH GIẢM TỐC & KHẮC PHỤC GIẬT GA KHI TIẾP CẬN WAYPOINT CUỐI CÙNG
+**1. Nguyên nhân kỹ thuật gây giật ga/vọt ga ở Waypoint cuối:**
+* Với Waypoint giữa Mission, Pixhawk tạo đường vuông góc Finish Line nối sang điểm tiếp theo. Xe cắt qua đường này là lập tức chốt `_reached_destination = true` nhảy sang WP mới.
+* Tuy nhiên, **Waypoint cuối cùng KHÔNG CÓ điểm tiếp theo, nên KHÔNG CÓ đường Finish Line**. Pixhawk bắt buộc xe phải dừng hẳn vận tốc về $0\text{ m/s}$ trong bán kính `WP_RADIUS`.
+* Nếu `ATC_DECEL_MAX = 0` (chưa cài dốc phanh), xe trôi đà lướt qua WP cuối. Vì chưa có Finish Line để chốt ngắt, Pixhawk tưởng xe dạt xa điểm đích và lập tức **bơm ga vọt ngược lên lại để đuổi điểm**.
 
+**2. Bộ 3 giải pháp cấu hình chuẩn:**
+* **Bổ sung gia tốc phanh S-Curve (`ATC_DECEL_MAX`):**
+  - Đặt **`ATC_DECEL_MAX = 1.0`** (đến `1.5` $\text{m/s}^2$).
+  - **Tác dụng:** Ép S-Curve tạo dốc giảm tốc tuyến tính mượt mà từ xa ($1.5 \rightarrow 1.0 \rightarrow 0.5 \rightarrow 0\text{ m/s}$), triệt tiêu hoàn toàn hiện tượng tụt ga giật cục hay vọt ga đuổi điểm.
 * **Cách 1: Thêm `Delay` (Thời gian dừng) vào Waypoint cuối (Khuyên dùng):**
-  - **Thao tác trên Mission Planner:** Tại hàng Waypoint cuối cùng (hoặc bất kỳ WP nào cần giảm tốc), đặt tham số **`Delay = 1`** (hoặc `0.5` giây).
-  - **Cơ chế hoạt động:** Ngay khi thấy có thời gian chờ `Delay > 0`, thuật toán S-Curve tự động chuyển WP đó từ Fast WP sang Normal Stop WP. Xe sẽ tự tính toán quãng đường hãm phanh mượt mà từ xa để về vận tốc $0\text{ m/s}$ ngay tại tâm WP, chờ hết `Delay` rồi mới chuyển trạng thái tiếp theo.
-
+  - **Thao tác:** Tại hàng Waypoint cuối cùng trên Mission Planner, đặt tham số **`Delay = 1`** (hoặc `0.5` giây).
+  - **Cơ chế:** Khi có `Delay > 0`, S-Curve tự động chuyển WP cuối thành Normal Stop WP, chủ động rải mượt dốc phanh giảm tốc về $0\text{ m/s}$ ngay tại tâm WP.
 * **Cách 2: Chèn lệnh giảm tốc trong bài Mission (`DO_CHANGE_SPEED`):**
-  - **Thao tác trên Mission Planner:** Nếu muốn xe ép chạy với tốc độ bò chậm cố định (ví dụ $0.5\text{ m/s}$) trước khi tới WP cuối, chèn lệnh **`DO_CHANGE_SPEED`** ngay trước Waypoint cuối:
-    - **`Speed Type`**: `0` (Ground speed)
-    - **`Speed`**: `0.5` ($\text{m/s}$)
+  - **Thao tác:** Chèn lệnh **`DO_CHANGE_SPEED`** (`Speed = 0.5 m/s`) ngay trước Waypoint cuối để ép xe bò chậm trước khi cán đích.
 ---
 ### BƯỚC 5.4: CẤU HÌNH HÀNH VI DỪNG THẲNG KHI GẶP VẬT CẢN (LIDAR OBSTACLE STOP & AUTO RESUME)
 Cấu hình để xe khi gặp vật cản phía trước sẽ **phanh dừng thẳng lại tại chỗ (không bẻ lái, không rẽ, không lùi)**, và khi vật cản rời đi thì **tự động chạy tiếp đúng vệt đường ban đầu**:
