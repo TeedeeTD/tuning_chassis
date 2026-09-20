@@ -24,6 +24,22 @@ Trước khi tiến hành bẻ lái hay chạy tự động (AUTO), mục tiêu 
 
 ---
 
+### BƯỚC 0.1: CẤU HÌNH & BÙ GÓC LỆCH HƯỚNG LA BÀN (COMPASS HEADING OFFSET)
+Trước khi tune bẻ lái, cần đảm bảo hướng la bàn (Heading) trên Mission Planner trùng khớp với hướng đầu xe thực tế:
+1. **Xoay hướng lắp đặt phần cứng cố định (90°, 180°, 270°) — Chỉnh `COMPASS_ORIENT2` (hoặc `COMPASS_ORIENT`):**
+   - Nếu la bàn bị gắn xoay vuông góc so với đầu xe:
+     - **`0`**: `None` (mặc định hướng tiến về trước).
+     - **`4`**: `ROTATION_YAW_90` (gắn xoay sang phải 90°).
+     - **`6`**: `ROTATION_YAW_180` (gắn quay ngược về sau 180°).
+     - **`29`**: `ROTATION_YAW_270` (gắn xoay sang trái 90°).
+2. **Bù góc lệch tinh thực địa (vài độ) — Chỉnh `COMPASS_DEC` (Declination):**
+   - Nếu hướng xe hiển thị trên màn hình bị lệch nhẹ vài độ so với hướng thực tế:
+     - Đơn vị tính bằng **Radian** ($\text{Rad} = \text{Góc độ} \times \frac{\pi}{180}$).
+     - **Xe lệch sang phải $5^\circ$:** Đặt **`COMPASS_DEC = 0.087`** ($5 \times \frac{\pi}{180}$).
+     - **Xe lệch sang trái $5^\circ$:** Đặt **`COMPASS_DEC = -0.087`**.
+
+---
+
 ### BƯỚC 1: XÁC ĐỊNH `CRUISE_SPEED` & `CRUISE_THROTTLE`
 Xe phải giữ tốc độ chuẩn trước khi tune bẻ lái.
 1. Chuyển xe sang chế độ **`MANUAL` mode**.
