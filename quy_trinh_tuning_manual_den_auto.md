@@ -170,9 +170,21 @@ Sau khi chạy kiểm thử AUTO mode cơ bản thành công, tiến hành chấ
   - **Thao tác trên Mission Planner:** Nếu muốn xe ép chạy với tốc độ bò chậm cố định (ví dụ $0.5\text{ m/s}$) trước khi tới WP cuối, chèn lệnh **`DO_CHANGE_SPEED`** ngay trước Waypoint cuối:
     - **`Speed Type`**: `0` (Ground speed)
     - **`Speed`**: `0.5` ($\text{m/s}$)
-    - **`Throttle`**: `-1` (Mặc định)
+---
+### BƯỚC 5.4: CẤU HÌNH HÀNH VI DỪNG THẲNG KHI GẶP VẬT CẢN (LIDAR OBSTACLE STOP & AUTO RESUME)
+Cấu hình để xe khi gặp vật cản phía trước sẽ **phanh dừng thẳng lại tại chỗ (không bẻ lái, không rẽ, không lùi)**, và khi vật cản rời đi thì **tự động chạy tiếp đúng vệt đường ban đầu**:
+
+1. **`OA_TYPE = 0` (Disabled):** Tắt thuật toán tự bẻ lái né vòng quanh vật cản $\rightarrow$ Xe tuyệt đối không tự bẻ lái rẽ nhánh.
+2. **`AVOID_ENABLE = 1` (Use Proximity):** Bật chế độ hãm phanh dừng an toàn trước vật cản.
+3. **`AVOID_BACKZ_SPD = 0.0` (m/s):** Khống chế tốc độ lùi bằng `0.0 m/s` $\rightarrow$ Xe tuyệt đối không bao giờ cài số lùi.
+4. **`AVOID_MARGIN = 1.0` (m):** Khoảng cách phanh dừng cách vật cản 1.0m. Khi vật cản di chuyển xa hơn 1.0m, xe tự động nhả phanh và chạy tiếp đúng vệt đường mission.
+5. **Cấu hình BAF Custom Failsafe (nếu có):**
+   - **`FS_BAF_ENABLE = 1.0`**
+   - **`FS_BAF_LIDAR_MIN = 1.0`** (Khoảng cách kích hoạt dừng 1.0m).
+   - **`FS_BAF_RESUME = 2.0`** (Tự động Resume chạy tiếp sau khi hết vật cản).
 
 ---
+
 
 
 ## 📊 BẢNG SO SÁNH BIẾN ĐỔI CHI TIẾT GIỮA BẢN 03/08 VÀ BẢN 09/08 LATEST
