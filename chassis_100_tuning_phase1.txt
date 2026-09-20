@@ -1,0 +1,111 @@
+1
+00:00:00,000 --> 00:00:15,000
+[KHỞI TẠO HỆ THỐNG & KẾT NỐI MAVLINK - 00:00:00]
+- Chỉnh cái gì: Mở Mission Planner, kết nối Telemetry/Mavlink và bật đồ thị Tuning (Flight Data -> Tuning tab).
+- Để làm gì: Theo dõi tín hiệu realtime tốc độ xoay lái (steering_rate) và tốc độ xoay lái mong muốn (des_steering_rate).
+- Làm như thế nào: Tích chọn 2 ô 'steering_rate' và 'des_steering_rate' ở góc dưới bên phải màn hình.
+
+2
+00:00:15,000 --> 00:00:52,000
+[ĐÁNH GIÁ ĐỘ TRỄ BAN ĐẦU - 00:00:15]
+- Chỉnh cái gì: Quan sát độ chênh lệch giữa 2 đường cong tín hiệu trên đồ thị khi xoay tay lái RC.
+- Để làm gì: Đo độ trễ (lag), độ nhạy vật lý của cơ cấu lái và đánh giá nhiễu của hệ thống khung gầm Chassis 100.
+- Làm như thế nào: Giữ xe ở MANUAL mode, lắc nhẹ tay lái RC và so sánh biên độ độ rộng giữa des_steering_rate và steering_rate.
+
+3
+00:00:52,000 --> 00:01:30,000
+[CHUYỂN SANG CHẾ ĐỘ ACRO MODE - 00:00:52]
+- Chỉnh cái gì: Đổi Flight Mode sang ACRO Mode.
+- Để làm gì: ACRO Mode giữ tốc độ xoay lái (Steering Rate) cố định theo góc nghiêng tay ga/tay lái RC, giúp tune bộ PID góc xoay mượt nhất.
+- Làm me thế nào: Chọn Flight Mode = ACRO trên công tắc RC hoặc bảng điều khiển Mission Planner.
+
+4
+00:01:30,000 --> 00:03:04,000
+[TUNE FEED-FORWARD ATC_STR_RAT_FF - 00:01:30]
+- Chỉnh cái gì: Chỉnh tham số ATC_STR_RAT_FF (Feed-Forward Gain).
+- Để làm gì: Cung cấp lực đáp ứng tức thì ngay thời điểm bẻ lái, triệt tiêu độ trễ khởi tạo của hệ thống lái.
+- Làm như thế nào: Tăng ATC_STR_RAT_FF từ 0 lên 0.5 ~ 1.0 (nhập giá trị tại Tuning tab) cho đến khi đường steering_rate phản ứng ngay lập tức khi đánh lái.
+
+5
+00:03:04,000 --> 00:04:32,000
+[TUNE HỆ SỐ TỶ LỆ ATC_STR_RAT_P - 00:03:04]
+- Chỉnh cái gì: Tham số ATC_STR_RAT_P (Proportional Gain).
+- Để làm gì: Tăng phản ứng lực lái theo tỉ lệ độ lệch giữa đáp ứng thực tế và mong muốn.
+- Làm như thế nào: Tăng ATC_STR_RAT_P từ 0.05 lên 0.2. Chạy xe bẻ lái ziczac; nếu thấy bánh lái bị rung dao động thì giảm nhẹ P xuống 10%.
+
+6
+00:04:32,000 --> 00:05:47,000
+[TUNE HỆ SỐ TÍCH PHÂN ATC_STR_RAT_I - 00:04:32]
+- Chỉnh cái gì: Tham số ATC_STR_RAT_I (Integral Gain).
+- Để làm gì: Triệt tiêu sai số bù dư (offset) trong các pha ôm cua góc rộng kéo dài.
+- Làm như thế nào: Đặt ATC_STR_RAT_I = ATC_STR_RAT_P (khoảng 0.1 - 0.2) và đặt IMAX = 1.0 để giữ đỉnh đồ thị steering_rate luôn tiệm cận đúng des_steering_rate.
+
+7
+00:05:47,000 --> 00:07:03,000
+[TUNE HỆ SỐ ĐẠO HÀM ATC_STR_RAT_D - 00:05:47]
+- Chỉnh cái gì: Tham số ATC_STR_RAT_D (Derivative Gain).
+- Để làm gì: Hãm đà xoay, dập tắt các hiện tượng vọt lố (overshoot) và làm mịn bánh lái khi trả thẳng.
+- Làm như thế nào: Tăng D từ 0 lên 0.01 ~ 0.1. Kiểm tra nếu bánh lái có tiếng giật rung cơ khí thì giảm ngay D xuống.
+
+8
+00:07:03,000 --> 00:08:31,000
+[TUNE GÓC BÁM CUA ATC_STR_ANG_P - 00:07:03]
+- Chỉnh cái gì: Tham số ATC_STR_ANG_P (Steering Angle P Gain).
+- Để làm gì: Chuyển đổi giữa góc hướng mong muốn và v setpoint tốc độ góc xoay lái, giúp xe vào cua êm không bị gắt.
+- Làm như thế nào: Nhập ATC_STR_ANG_P = 2.0 (tăng dần tới 4.0), bẻ lái góc lớn và xem xe chuyển hướng có êm ái không.
+
+9
+00:08:31,000 --> 00:10:02,000
+[ĐO VẬN TỐC CRUISE SPEED & GA BAN ĐẦU - 00:08:31]
+- Chỉnh cái gì: CRUISE_SPEED (m/s) và CRUISE_THROTTLE (%).
+- Để làm gì: Xác định mốc tốc độ làm việc tiêu chuẩn và mức % ga tương ứng để bộ điều khiển tính toán tỉ lệ ga.
+- Làm như thế nào: Cho xe chạy tiến thẳng ở MANUAL mode với tốc độ mong muốn (1.5 m/s), xem % tay ga trên HUD (50%) rồi nhập vào CRUISE_SPEED = 1.5, CRUISE_THROTTLE = 50.
+
+10
+00:10:02,000 --> 00:12:34,000
+[TUNE PID VẬN TỐC & GIA TỐC ATC_SPEED_* - 00:10:02]
+- Chỉnh cái gì: Tham số ATC_SPEED_P, ATC_SPEED_I, ATC_ACCEL_MAX.
+- Để làm gì: Điều khiển tầng gia tốc/vận tốc dọc mượt mà, tránh tình trạng xe bị chần chừ hoặc giật nảy khi bắt đầu di chuyển.
+- Làm như thế nào: Cài ATC_SPEED_P = 0.02, ATC_SPEED_I = 0.0, ATC_ACCEL_MAX = 1.0 m/s², quan sát đồ thị tốc độ thực tế tăng đều theo dạng ramp up.
+
+11
+00:12:34,000 --> 00:15:41,000
+[TUNE BỘ ĐIỀU KHIỂN VỊ TRÍ PSC_POS_P - 00:12:34]
+- Chỉnh cái gì: Tham số PSC_POS_P (Position Controller Proportional Gain).
+- Để làm gì: Quyết định lực kéo bám đưa xe quay lại đường thẳng mục tiêu (NavLine) khi xe bị dạt lệch tuyến.
+- Làm như thế nào: Chuyển xe sang STEERING mode, cố tình lái xe lệch vệt và tăng PSC_POS_P từ 0.1 lên 0.2 để xe tự điều hướng về tuyến êm ái.
+
+12
+00:15:41,000 --> 00:20:00,000
+[TUNE VẬN TỐC VỊ TRÍ PSC_VEL_* & LỌC NHIỄU - 00:15:41]
+- Chỉnh cái gì: Tham số PSC_VEL_P, PSC_VEL_I, PSC_VEL_FLTE (Filter Hz).
+- Để làm gì: Làm mịn phản ứng lái theo tốc độ dịch chuyển vị trí và khử nhiễu từ cảm biến GPS/Encoder.
+- Làm như thế nào: Đặt PSC_VEL_P = 1.0, PSC_VEL_I = 0.0, tần số lọc đầu vào PSC_VEL_FLTE = 5 Hz.
+
+13
+00:20:00,000 --> 00:25:00,000
+[THIẾT LẬP BÁN KÍNH QUAY VÀ WAYPOINT - 00:20:00]
+- Chỉnh cái gì: TURN_RADIUS (m) và WP_RADIUS (m).
+- Để làm gì: Giới hạn bán kính rẽ vật lý tối thiểu của xe để tránh cắt góc quá gắt làm mất ổn định khung gầm 500kg.
+- Làm như thế nào: Nhập TURN_RADIUS = 3.4m, WP_RADIUS = 1.5m phù hợp với thông số cơ khí của xe Chassis 100.
+
+14
+00:25:00,000 --> 00:45:00,000
+[CHẠY THỬ MÔ HÌNH BÁM VỆT TỰ ĐỘNG AUTO MODE - 00:25:00]
+- Chỉnh cái gì: Nạp Waypoints Plan & chuyển xe sang AUTO Mode.
+- Để làm gì: Kiểm thử thực tế khả năng tự động bám tuyến, gia tốc ramp-up/ramp-down và ôm cua theo đường cong thiết kế.
+- Làm như thế nào: Nạp tuyến đường mẫu, ARM xe, chuyển công tắc AUTO Mode, quan sát sai số bám vệt Cross-Track Error trên Mission Planner.
+
+15
+00:45:00,000 --> 01:10:00,000
+[TINH CHỈNH TINH THỰC ĐỊA KHI XE NẶNG TẢI - 00:45:00]
+- Chỉnh cái gì: Vi điều chỉnh nhỏ ATC_STR_RAT_P và PSC_POS_P trên bãi test thực tế.
+- Để làm gì: Bù trừ ma sát bề mặt bê tông/đất phẳng và hiện tượng trượt tải khi xe mang tải trọng lớn.
+- Làm như thế nào: Tăng/giảm nhẹ 5% các thông số P tùy theo độ trễ bám vệt thực tế khi ôm cua góc rộng.
+
+16
+01:10:00,000 --> 01:32:22,000
+[XÁC NHẬN BỘ PARTICLES & LƯU PARAMETER - 01:10:00]
+- Chỉnh cái gì: Nhấn Write Params và xuất file tunning_rv1_done_07_08_2026.param.
+- Để làm gì: Nạp vĩnh viễn bộ thông số đã tune chuẩn vào bộ điều khiển xe và lưu bản sao lưu dự phòng.
+- Làm như thế nào: Trên Mission Planner -> Full Parameter List -> Click 'Write Params' -> Save to File.
