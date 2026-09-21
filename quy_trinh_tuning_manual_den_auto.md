@@ -32,15 +32,15 @@ Trước khi tune bẻ lái, cần đảm bảo hướng la bàn (Heading) báo 
    - ⚠️ **TUYỆT ĐỐI KHÔNG sửa `COMPASS_DEC` để bù góc gắn chéo phần cứng (ví dụ $+20^\circ$)**. Nhập sai `COMPASS_DEC` sẽ gây xung đột EKF/DCM, dẫn tới lỗi **`PreArm: AHRS: DCM Yaw inconsistent 20 deg`** và khóa không cho ARM xe.
 
 2. **Các cách xử lý chuẩn khi hướng la bàn bị lệch thực tế:**
-   - **Cách A: Bù góc lắp chéo Pixhawk/La bàn trên khung xe — Chỉnh `AHRS_TRIM_YAW`:**
-     - Nếu Pixhawk hoặc module la bàn bị gắn nghiêng/chéo một góc (ví dụ lệch $20^\circ$ so với trục xe), cài **`AHRS_TRIM_YAW = 20`** (hoặc **`-20`**) (đơn vị tính bằng **Độ**).
-   - **Cách B: Xoay hướng lắp phần cứng vuông góc (90°, 180°, 270°) — Chỉnh `COMPASS_ORIENT2` (hoặc `COMPASS_ORIENT`):**
+   - **Cách A: Chỉnh hướng lắp phần cứng mạch Pixhawk — Chỉnh `AHRS_ORIENTATION`:**
+     - Nếu mạch Pixhawk bị lắp xoay nghiêng so với đầu xe, chỉnh tham số **`AHRS_ORIENTATION`** (ví dụ `29` = ROTATION_YAW_270).
+   - **Cách B: Chỉnh hướng lắp phần cứng La bàn — Chỉnh `COMPASS_ORIENT2` (hoặc `COMPASS_ORIENT`):**
      - **`0`**: `None` (mặc định hướng tiến về trước).
      - **`4`**: `ROTATION_YAW_90` (gắn xoay sang phải 90°).
      - **`6`**: `ROTATION_YAW_180` (gắn quay ngược về sau 180°).
-     - **`29`**: `ROTATION_YAW_270` (gắn xoay sang trái 90° - *giá trị chuẩn cho Compass 2*).
-   - **Cách C: Khử nhiễu từ trường khung thép/động cơ (Onboard Calibration):**
-     - Vào **Setup** ➔ **Mandatory Hardware** ➔ **Compass** ➔ Bấm **Start Onboard Mag Calibration** và xoay xe để Pixhawk tự triệt tiêu nhiễu từ trường thực tế.
+     - **`29`**: `ROTATION_YAW_270` (gắn xoay sang trái 90° - *giá trị hiện tại trong param của bạn*).
+   - **Cách C: Khử nhiễu từ trường làm lệch 20° (Onboard Calibration):**
+     - Vào **Setup** ➔ **Mandatory Hardware** ➔ **Compass** ➔ Bấm **Start Onboard Mag Calibration** và xoay xe 360° để Pixhawk tự triệt tiêu 20° nhiễu từ trường khung xe.
 
 ---
 
