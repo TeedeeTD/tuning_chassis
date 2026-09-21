@@ -41,6 +41,12 @@ Trước khi tune bẻ lái, cần đảm bảo hướng la bàn (Heading) báo 
      - **`29`**: `ROTATION_YAW_270` (gắn xoay sang trái 90° - *giá trị hiện tại trong param của bạn*).
    - **Cách C: Khử nhiễu từ trường làm lệch 20° (Onboard Calibration):**
      - Vào **Setup** ➔ **Mandatory Hardware** ➔ **Compass** ➔ Bấm **Start Onboard Mag Calibration** và xoay xe 360° để Pixhawk tự triệt tiêu 20° nhiễu từ trường khung xe.
+   - **Cách D: Nhập góc bù trực tiếp bằng số Độ — Chỉnh `COMPASS_CUS_DEC`:**
+     - Nhập trực tiếp góc bù bằng số **Độ** (ví dụ `20` hoặc `-20`) nếu firmware hỗ trợ tham số `COMPASS_CUS_DEC`.
+   - **Cách E: Can thiệp trực tiếp Offset từ trường 3 trục — Chỉnh `COMPASS_OFS2_X / Y / Z`:**
+     - Điều chỉnh các tham số Hard-Iron Offset `COMPASS_OFS2_X`, `COMPASS_OFS2_Y`, `COMPASS_OFS2_Z` (đơn vị mGauss) để dịch chuyển trực tiếp gốc đo từ trường của La bàn 2.
+   - **Cách F: Cho Pixhawk tự động học & offset góc xoay La bàn — Đặt `COMPASS_AUTO_ROT = 1`:**
+     - Đặt **`COMPASS_AUTO_ROT = 1`** để Pixhawk tự động phát hiện và cộng bù số độ lệch góc xoay của la bàn khi xe vận hành.
 
 ---
 
