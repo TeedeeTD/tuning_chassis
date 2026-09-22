@@ -157,20 +157,24 @@ Sau khi chạy kiểm thử AUTO mode cơ bản thành công, tiến hành chấ
 2. Kiểm tra lại nhiệt độ động cơ và độ trễ phản hồi tay lái sau khi hoàn tất vi điều chỉnh.
 
 ---
-### BƯỚC 5.2: CẤU HÌNH TỰ ĐỘNG GIẢM TỐC KHI VÀO CUA GẮT (> 45°)
-Để xe tự động phân biệt: Cua nông (< 10°) giữ nguyên tốc độ $1.5\text{ m/s}$, còn Cua gắt (≥ 45°) tự động hãm phanh giảm tốc về mốc an toàn $1.0\text{ m/s}$ (không bị lịm ga < 0.5 m/s):
-1. **Cấu hình Phân loại Waypoint tự động (`WP_PIVOT_ANGLE`):**
-   - Đặt **`WP_PIVOT_ANGLE = 45`** (độ).
-   - **Tác dụng:** 
-     - Góc bẻ lái giữa các đoạn $< 45^\circ$: Xe cắt cua mượt (Fast Waypoint) giữ nguyên tốc độ.
-     - Góc bẻ lái $\ge 45^\circ$: Pixhawk tự chuyển thành Normal Stop Waypoint, hãm phanh giảm tốc dừng/chậm lại rẽ hướng rồi mới đi tiếp.
-2. **Cấu hình Giảm tốc theo Gia tốc ngang S-Curve (`ATC_TURN_MAX_G`):**
-   - Đặt **`WP_RADIUS = 1.0`** (m) (siết bán kính chấp nhận điểm để xe không cắt cua từ quá xa).
-   - Khống chế gia tốc ngang theo công thức $V_{\text{cua}} = \sqrt{\text{ATC\_TURN\_MAX\_G} \times 9.81 \times R}$:
-     $$\text{ATC\_TURN\_MAX\_G} = \frac{(V_{\text{cua\_mong\_muon}})^2}{9.81 \times \text{TURN\_RADIUS}}$$
-   - **Áp dụng cho xe `TURN_RADIUS = 3.0m`, muốn vận tốc cua $1.0\text{ m/s}$:**
-     - Đặt **`ATC_TURN_MAX_G = 0.035`** (G).
-     - **Hiệu ứng:** Xe chạy thẳng duy trì $1.5\text{ m/s}$, khi vào cua gắt $R = 3.0\text{m}$ tự động hãm phanh về đúng $1.0\text{ m/s}$ mà không bao giờ bị lịm ga $< 0.5\text{ m/s}$.
+### BƯỚC 5.2: CẤU HÌNH TỰ ĐỘNG GIẢM TỐC KHI VÀO CUA GẮT (CUA 90°)
+Đối với xe Ackermann (không thể xoay tại chỗ như Skid-Steer), tham số trực tiếp quyết định việc tự động giảm tốc độ khi xe bẻ lái / vào góc cua chính là **`MOT_STR_THR_MIX`** kết hợp với **`ATC_TURN_MAX_G`**:
+
+1. **Cấu hình Tỉ lệ giảm ga theo góc lái (`MOT_STR_THR_MIX`):**
+   - **Ý nghĩa:** Tỉ lệ giảm ga (tốc độ) tự động theo góc đánh lái.
+   - **Cơ chế:** Khi xe đánh lái góc càng lớn (như khi cua 90°), thuật toán sẽ tự động hãm bớt ga tiến tương ứng để xe ôm cua an toàn và không bị văng lấn lề (overshoot).
+   - **Các mức thiết lập:**
+     - **`0.0`**: Tắt tính năng (xe giữ nguyên tốc độ ngay cả khi bẻ lái hết cỡ).
+     - **`0.5`**: Mặc định (giảm 50% ga khi bẻ lái tối đa).
+     - **`0.8` – `1.0`**: Khuyên dùng cho xe Ackermann nặng tải (100kg - 500kg), giúp xe giảm tốc rất mượt trước khi qua góc 90°.
+   - *(Lưu ý: Không dùng `WP_PIVOT_ANGLE` cho xe Ackermann vì xe Ackermann không thể quay tại chỗ).*
+
+2. **Phối hợp với Gia tốc ngang S-Curve (`ATC_TURN_MAX_G`):**
+   - Trong chế độ tự động AUTO, ArduRover kết hợp giảm tốc vào cua dựa trên gia tốc ly tâm:
+     $$V_{\text{cua}} = \sqrt{9.81 \times \text{ATC\_TURN\_MAX\_G} \times R}$$
+   - **Cấu hình đề xuất cho xe 500kg:**
+     - Đặt **`MOT_STR_THR_MIX = 0.8`** kết hợp với **`ATC_TURN_MAX_G = 0.25` – `0.3 G`**.
+     - **Hiệu ứng:** Xe chủ động phanh hãm tốc mượt mà trước cua 90° và ôm sát vệt đường chuẩn xác không bị lợn hình sin hay lịm ga.
 
 ---
 ---
