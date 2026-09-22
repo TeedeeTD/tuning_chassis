@@ -90,7 +90,7 @@ Xe phải giữ tốc độ chuẩn trước khi tune bẻ lái.
    - Biến `pidachieved` chính là giá trị Gyro Z thực tế (tốc độ rẽ xe đạt được $\text{deg/s}$).
    - Nhìn đỉnh cao nhất của `pidachieved` (ví dụ vọt lên mốc $50^\circ/\text{s}$).
 4. Tính toán theo công thức lý thuyết hoặc đo đạc:
-   $$\text{ATC\\_STR\\_RAT\\_MAX} = \left(\frac{\text{CRUISE\\_SPEED}}{\text{TURN\\_RADIUS}}\right) \times \frac{180}{\pi} = \left(\frac{1.5}{1.7}\right) \times 57.3 \approx 50.5^\circ/\text{s}$$
+   $$\text{ATC\_STR\_RAT\_MAX} = \left(\frac{\text{CRUISE\_SPEED}}{\text{TURN\_RADIUS}}\right) \times \frac{180}{\pi} = \left(\frac{1.5}{1.7}\right) \times 57.3 \approx 50.5^\circ/\text{s}$$
 5. Cài đặt tham số:
    - **`ACRO_TURN_RATE` = 50**
    - **`ATC_STR_RAT_MAX` = 50**
@@ -132,6 +132,10 @@ Sau khi đã làm chủ góc bẻ lái, cần tune bộ điều khiển vị tr�
    - **Sử dụng chế độ `STEERING Mode`** làm bước đệm trung gian giữa ACRO và AUTO. Ở chế độ này, người vận hành dùng tay gạt ga cho xe tiến thẳng và cố tình bẻ nhẹ tay lái lệch khỏi đường mục tiêu để kiểm thử khả năng xe tự kéo bám lại tuyến trước khi chuyển sang AUTO hoàn toàn.
    - **Nếu xe kéo về tuyến quá chậm / uể uải:** Tăng `PSC_POS_P` lên từng nấc `0.1` (ví dụ `0.2` $\rightarrow$ `0.3` $\rightarrow$ `0.5`).
    - **Nếu xe về tuyến gắt quá bị lượn hình sóng (Zig-zag / Rắn bò):** Giảm `PSC_POS_P` xuống.
+4. **Cài đặt Tiền đề Tham số S-Curve trước khi chuyển sang AUTO Mode:**
+   - **`ATC_TURN_MAX_G` (Gia tốc ly tâm khi cua):** Đặt **`ATC_TURN_MAX_G = 0.3` – `0.5 G`** (tránh để quá nhỏ $0.035\text{G}$ khiến Pixhawk hãm lịm ga khi vào cua ở lần chạy AUTO đầu tiên).
+   - **`ATC_DECEL_MAX` (Gia tốc phanh mượt):** Đặt **`ATC_DECEL_MAX = 1.0` – `3.0 m/s²`** để Pixhawk rải dốc phanh mượt khi tiến vào Waypoint cuối, tránh hiện tượng trôi đà vọt lố giật cục.
+   - **Đồng bộ `WP_RADIUS = TURN_RADIUS`:** Đảm bảo **`WP_RADIUS` bằng đúng `TURN_RADIUS`** (ví dụ cùng $= 1.7\text{m}$ hoặc $3.0\text{m}$) ngay trước khi sang Bước 5 để đường lượn cua S-Curve khớp khít không bị chồng chéo.
 
 ---
 
@@ -162,8 +166,8 @@ Sau khi chạy kiểm thử AUTO mode cơ bản thành công, tiến hành chấ
      - Góc bẻ lái $\ge 45^\circ$: Pixhawk tự chuyển thành Normal Stop Waypoint, hãm phanh giảm tốc dừng/chậm lại rẽ hướng rồi mới đi tiếp.
 2. **Cấu hình Giảm tốc theo Gia tốc ngang S-Curve (`ATC_TURN_MAX_G`):**
    - Đặt **`WP_RADIUS = 1.0`** (m) (siết bán kính chấp nhận điểm để xe không cắt cua từ quá xa).
-   - Khống chế gia tốc ngang theo công thức $V_{\text{cua}} = \sqrt{\text{ATC\\_TURN\\_MAX\\_G} \times 9.81 \times R}$:
-     $$\text{ATC\\_TURN\\_MAX\\_G} = \frac{(V_{\text{cua\\_mong\\_muon}})^2}{9.81 \times \text{TURN\\_RADIUS}}$$
+   - Khống chế gia tốc ngang theo công thức $V_{\text{cua}} = \sqrt{\text{ATC\_TURN\_MAX\_G} \times 9.81 \times R}$:
+     $$\text{ATC\_TURN\_MAX\_G} = \frac{(V_{\text{cua\_mong\_muon}})^2}{9.81 \times \text{TURN\_RADIUS}}$$
    - **Áp dụng cho xe `TURN_RADIUS = 3.0m`, muốn vận tốc cua $1.0\text{ m/s}$:**
      - Đặt **`ATC_TURN_MAX_G = 0.035`** (G).
      - **Hiệu ứng:** Xe chạy thẳng duy trì $1.5\text{ m/s}$, khi vào cua gắt $R = 3.0\text{m}$ tự động hãm phanh về đúng $1.0\text{ m/s}$ mà không bao giờ bị lịm ga $< 0.5\text{ m/s}$.
