@@ -205,7 +205,6 @@ Cấu hình để xe khi gặp vật cản phía trước sẽ **phanh dừng th
 ---
 
 
-
 ## 📊 BẢNG SO SÁNH BIẾN ĐỔI CHI TIẾT GIỮA BẢN 03/08 VÀ BẢN 09/08 LATEST
 
 Dưới đây là bảng 15 tham số đã được cải tiến từ `ban_chuan_da_fix_03_08_26.param` sang `09082026_latest.param`:
